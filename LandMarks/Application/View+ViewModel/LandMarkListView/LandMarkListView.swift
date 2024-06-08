@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct LandMarkListView: View {
-    var landmarks: [Landmark] = load("landmarkData.json")
+    @StateObject var viewModel = LandmarkViewModel()
     var body: some View {
         NavigationView{
-            VStack(alignment: .leading, spacing: 10){
+            VStack(alignment: .leading, spacing: 0){
                 HStack{
                     Text("Land Mark")
                         .font(.title)
@@ -19,17 +19,24 @@ struct LandMarkListView: View {
                         .padding(.horizontal)
                     Spacer()
                 }
+                .padding(.bottom, 5)
                 .background(Color.white)
+                
                 ScrollView(showsIndicators: false){
-                    ForEach(0..<landmarks.count, id: \.self){ index in
-                        let land = landmarks[index]
+                    ForEach(0..<viewModel.landmarks.count, id: \.self){ index in
+                        let land = viewModel.landmarks[index]
                         LandMarkListCell(landmarkIcon: land.imageName, landmarkTitle: land.name, landmarkSubTitle: land.subtitle)
                             .padding(.horizontal)
+                            .padding(.bottom, 2)
                     }
+                    .padding(.top, 10)
                 }
                
             }
             .background(Color("F8F8F8"))
+            .onAppear{
+                viewModel.getJsonData()
+            }
         }
         .navigationViewStyle(StackNavigationViewStyle())
         .navigationBarHidden(true)
@@ -40,6 +47,6 @@ struct LandMarkListView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-                    LandMarkListView()
+        LandMarkListView()
     }
 }
